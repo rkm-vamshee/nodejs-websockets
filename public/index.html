@@ -1,0 +1,54 @@
+<html>
+    <head>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.1.3/socket.io.js" integrity="sha512-PU5S6BA03fRv1Q5fpwXjg5nlRrgdoguZ74urFInkbABMCENyx5oP3hrDzYMMPh3qdLdknIvrGj3yqZ4JuU7Nag==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    </head>
+
+    <body>
+        
+        <h1>Chatting Project With Nodejs</h1>
+
+        <!-- Output -->
+        <!-- input : who -->
+        <!-- input : message -->
+        <!-- Button -->
+        <div id="output"></div>
+
+        <div>
+            <input type="text" placeholder="Who" id="whoInput">
+            <input type="text" placeholder="Message" id="msgInput">
+            <button id="sendBtn">Send</button>
+        </div>
+
+
+        <script>
+            var socketClient = io.connect('http://localhost:4500');
+            // back end and front end - are in Same server
+
+            // calling event - emitting event
+            // eventName, what message to event(Optional)
+            // socketClient.emit('chatWithServer');
+
+            var btn = document.getElementById('sendBtn');
+            var whoInputTag = document.getElementById('whoInput');
+            var msgInputTag = document.getElementById('msgInput');
+
+            var outputTag = document.getElementById('output');
+
+            btn.addEventListener('click', function(){
+                var whoValue = whoInputTag.value;
+                var msgValue = msgInputTag.value;
+                // event name, data
+                socketClient.emit('chatWithServerWithMessage',{'who':whoValue, 'msg':msgValue});
+                // alert(whoValue+': '+msgValue);
+            });
+
+            socketClient.on('chatWithClientWithMessage',function(data){
+
+                let oldData = outputTag.innerHTML ;
+                outputTag.innerHTML = oldData+'<p><b>'+data.who+'</b>: '+data.msg+'</p>';
+                console.log("Client",data);
+            })
+
+        </script>
+    </body>
+</html>
